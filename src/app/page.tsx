@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ESTADO_LABELS, PRIORIDAD_LABELS } from "@/lib/types";
+import { useState, useEffect } from "react";
 import {
   ClipboardList,
   Clock,
@@ -20,13 +21,17 @@ import {
 
 export default function DashboardPage() {
   const { tareas, trabajadores, clientes, equipos } = useData();
+  const [hoy, setHoy] = useState("");
+
+  useEffect(() => {
+    setHoy(new Date().toISOString().split("T")[0]);
+  }, []);
 
   const pendientes = tareas.filter((t) => t.estado === "pendiente").length;
   const enProgreso = tareas.filter((t) => t.estado === "en_progreso").length;
   const completadas = tareas.filter((t) => t.estado === "completada").length;
 
-  const hoy = new Date().toISOString().split("T")[0];
-  const tareasHoy = tareas.filter((t) => t.fechaProgramada.startsWith(hoy));
+  const tareasHoy = hoy ? tareas.filter((t) => t.fechaProgramada.startsWith(hoy)) : [];
 
   const prioridadColor = {
     alta: "bg-red-100 text-red-800",
